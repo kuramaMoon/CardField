@@ -1,0 +1,5 @@
+export const FAN_CONFIG = {
+  MAX_FAN_ANGLE: 150,
+  MIN_ANGLE_BETWEEN: 10,
+  MAX_ANGLE_BETWEEN: 30
+};
