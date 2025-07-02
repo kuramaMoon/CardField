@@ -15,6 +15,7 @@ export class FanStacksManager extends PIXI.Container {
     this.maxFanCardsCount = Math.floor(FAN_CONFIG.MAX_FAN_ANGLE / FAN_CONFIG.MIN_ANGLE_BETWEEN) + 1;
     this.screenWidth = screenWidth;
     this.screenHeight = screenHeight;
+    console.log(`screenHeight: ${screenHeight}`)
     // Position container near bottom of screen
     this.position.set(0, this.screenHeight * 0.99);
   }

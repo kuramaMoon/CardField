@@ -59,13 +59,15 @@ async function playNextCard(
 
   const cardData = cardsQueue.shift()!;
   const texture = await PIXI.Texture.fromURL(cardData.image);
-  const desiredHeight = 1024 / 4;
+  const heightScene = 1024;
+  const widthScene = 1980;
+  const desiredHeight = heightScene / 4;
   const card = new FlyingCard(texture, desiredHeight);
   currentCard = card;
 
-  const startY = Math.random() * 1024 * 0.8;
-  const endY = Math.random() * 1024 * 0.8;
-  const startX = 1980 + 100;
+  const startY = Math.random() * heightScene * 0.8;
+  const endY = Math.random() * heightScene * 0.8;
+  const startX = widthScene + 100;
   const endX = -250;
 
   card.x = startX;
