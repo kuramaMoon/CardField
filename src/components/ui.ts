@@ -1,10 +1,10 @@
 import * as PIXI from 'pixi.js';
 import { FanStacksManager } from '../managers/fanStackManager';
 import { getAmountInDeck } from '../services/deck';
+import { ResizeManager } from '../managers/resizeManager ';
 
 /**
- * Shows "Game Over" message and player's score on the screen.
- * Text sizes adapt to screen height with min/max limits.
+ * Calculates font size based on screen height, constrained by min and max values.
  */
 function getAdaptiveFontSize(
   basePercent: number,
@@ -16,28 +16,34 @@ function getAdaptiveFontSize(
   return Math.max(minSize, Math.min(size, maxSize));
 }
 
+/**
+ * Displays "Game Over" and player's score, adapting text size and positioning on resize.
+ */
 export function showGameOver(app: PIXI.Application, fanStacksManager: FanStacksManager) {
   const totalCards = fanStacksManager.getTotalCardsCount();
   const amountInDeck = getAmountInDeck();
 
-  // "Game Over" main text, centered on screen
+  // "Game Over" main message with styling
   const gameOverText = new PIXI.Text('Game Over', {
     fontFamily: 'Arial',
     fontWeight: 'bold',
-    fill: 0xffffff,
+    fill: 0xFFFF99,
+    stroke: 0x000000,
+    strokeThickness: 3,
     align: 'center',
   });
+
   gameOverText.anchor.set(0.5);
   app.stage.addChild(gameOverText);
 
-  // Score text positioned at top-left corner
+  // Score display text
   const scoreText = new PIXI.Text(`Score: ${totalCards} / ${amountInDeck}`, {
     fontFamily: 'Arial',
     fill: 0xffffff,
   });
   app.stage.addChild(scoreText);
 
-  // Update text sizes and positions on resize
+  // Update font sizes and positions based on current screen size
   const updateTextLayout = () => {
     const gameOverFontSize = getAdaptiveFontSize(0.07, app.screen.height, 16, 64);
     const scoreFontSize = getAdaptiveFontSize(0.04, app.screen.height, 12, 32);
@@ -50,5 +56,7 @@ export function showGameOver(app: PIXI.Application, fanStacksManager: FanStacksM
   };
 
   updateTextLayout();
-  window.addEventListener('resize', updateTextLayout);
+
+  // Register layout update on window resize
+  ResizeManager.onResize(updateTextLayout);
 }

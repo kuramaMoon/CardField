@@ -22,6 +22,7 @@ export async function startGame(
   await preloadCards();
   await playNextCard(app, fanStacksManager, gameLayer);
 
+  // Update card rotation each frame while card is active and not caught
   app.ticker.add((delta) => {
     if (currentCard && !currentCard.isCaught) {
       currentCard.update(delta);
@@ -30,18 +31,18 @@ export async function startGame(
 }
 
 /**
- * Preloads cards into the queue until it contains at least 5 cards.
+ * Preloads cards until queue has at least 5 cards.
  */
 async function preloadCards() {
   while (cardsQueue.length < 5) {
     const cardData = await drawCard();
-    if (!cardData) break; // No more cards
+    if (!cardData) break; // No more cards available
     cardsQueue.push(cardData);
   }
 }
 
 /**
- * Plays the next card from the queue, animates it, and waits for catch or animation end.
+ * Plays next card from queue, animates its flight and handles catch or end of animation.
  */
 async function playNextCard(
   app: PIXI.Application,
@@ -52,6 +53,7 @@ async function playNextCard(
     await preloadCards();
   }
 
+  // End game if no cards left to play
   if (cardsQueue.length === 0) {
     showGameOver(app, fanStacksManager);
     return;
@@ -65,10 +67,11 @@ async function playNextCard(
   const card = new FlyingCard(texture, desiredHeight);
   currentCard = card;
 
+  // Randomize start and end Y positions for flight
   const startY = Math.random() * heightScene * 0.8;
   const endY = Math.random() * heightScene * 0.8;
-  const startX = widthScene + 100;
-  const endX = -250;
+  const startX = widthScene + 100; // Start offscreen right
+  const endX = -250;               // End offscreen left
 
   card.x = startX;
   card.y = startY;
@@ -78,6 +81,7 @@ async function playNextCard(
   (card as any).buttonMode = true;
 
   return new Promise<void>((resolve) => {
+    // Handle card catch by player click
     card.on('pointerdown', async () => {
       if (card.isCaught) return;
 
@@ -99,6 +103,7 @@ async function playNextCard(
 
     gameLayer.addChild(card);
 
+    // Animate card flight and proceed if card not caught
     animateCard(card, startX, startY, endX, endY).then(async () => {
       if (!card.isCaught) {
         gameLayer.removeChild(card);
@@ -112,7 +117,7 @@ async function playNextCard(
 }
 
 /**
- * Animates the card flying from start to end coordinates with easing.
+ * Animates card flying across screen with ease-out quadratic timing.
  */
 function animateCard(
   card: FlyingCard,
