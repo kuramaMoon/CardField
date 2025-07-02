@@ -26,7 +26,7 @@ const maskLayer = new PIXI.Graphics();
 app.stage.addChild(maskLayer);
 
 // Setup resize handling for responsive scaling and letterboxing
-ResizeManager.init(app, gameLayer, maskLayer);
+ResizeManager.init(app, gameLayer);
 
 // Start the game logic
 startGame(app, fanStacksManager, gameLayer);

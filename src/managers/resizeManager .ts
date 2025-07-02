@@ -129,12 +129,12 @@
 //   }
 // }
 
-import { Application, Container, Graphics } from 'pixi.js';
+import { Application, Container} from 'pixi.js';
 
 export class ResizeManager {
   private static resizeTimeout: number | undefined;
 
-  static init(app: Application, gameLayer: Container, maskLayer: Graphics): void {
+  static init(app: Application, gameLayer: Container): void {
     const baseWidth = 1980;
     const baseHeight = 1024;
 
